@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+APP_HOME=$(cd $(dirname $0)/..; pwd)
+echo "Activate the runtime environment."
+source $APP_HOME/env/2.7/bin/activate
+python_version=$(python -V 2>&1)
+if [[ -z "$python_version" ]];then
+    echo "No Python!"
+    exit 1
+fi
+LOG_FILE="$APP_HOME/logs/application.log"
+if [[ -f $LOG_FILE ]];then
+    rm -f $LOG_FILE
+fi
+cd $APP_HOME
+nohup python $APP_HOME/application/main.pyc >/dev/null 2>&1& echo $! > $APP_HOME/server.pid &
+sleep 6
+tail -n +2  $LOG_FILE|head -n 8
+
+
